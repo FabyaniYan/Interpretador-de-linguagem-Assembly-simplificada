@@ -15,10 +15,10 @@ public class Interpreter {
     private final int[] reg = new int[26];
     private final boolean[] hasValue = new boolean[26];
 
-    //indice do registrador a..z
+    //indice do registrador
     private static int idx(char c){ return Character.toUpperCase(c) - 'A'; }
 
-    //verifica se string eh nome de registrador (1 letra)
+    //verifica se string e nome de registrador (1 letra)
     private static boolean isRegisterName(String s){
         return s != null && s.length()==1 && Character.isLetter(s.charAt(0));
     }
@@ -34,7 +34,7 @@ public class Interpreter {
         catch (NumberFormatException e){ return null; }
     }
 
-    //executa desde a menor linha; jnz altera o ponteiro atual
+    //executa desde a menor linha, jnz altera o ponteiro atual
     public void run(CodeListAdapter prog){
         if (prog == null || prog.getHead() == null){
             System.out.println("erro: nenhum codigo carregado.");
@@ -51,7 +51,8 @@ public class Interpreter {
 
             String[] p = txt.split("\\s+");
             String op = p[0].toLowerCase();
-
+            
+            //operacoes
             try {
                 switch (op) {
                     case "mov": {
