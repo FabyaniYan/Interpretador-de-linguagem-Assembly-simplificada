@@ -1,0 +1,5 @@
+10 mov a 20
+20 mov b 4
+30 div a b
+40 dec a
+50 out a

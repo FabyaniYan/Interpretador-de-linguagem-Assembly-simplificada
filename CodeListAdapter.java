@@ -10,19 +10,22 @@
  * 	------------------------------------------------
  */
 
-//adaptador: opera por numero de linha sobre a linkedlist<CodeLine>
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+//adaptador que opera por numero de linha sobre linkedlist
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 public class CodeListAdapter {
     private final LinkedList<CodeLine> list = new LinkedList<>();
 
+    //lista vazia?
     public boolean isEmpty(){ return list.isEmpty(); }
 
     //no cabeca (menor linha)
     public Node<CodeLine> getHead(){ return list.getHead(); }
 
-    //insere mantendo ordenacao por numero de linha ou atualiza se ja existir
+    //insere mantendo ordenacao por numero de linha; atualiza se ja existir
     public boolean insertOrUpdate(int line, String instr){
         if (line < 0) throw new IllegalArgumentException("linha negativa");
         if (list.isEmpty()){
@@ -39,16 +42,16 @@ public class CodeListAdapter {
             return false;
         }
         if (ant == null){
-            list.insertHead(new CodeLine(line, instr));        //cabeca
+            list.insertHead(new CodeLine(line, instr));   //cabeca
         } else if (p == null){
-            list.insertTail(new CodeLine(line, instr));        //fim
+            list.insertTail(new CodeLine(line, instr));   //fim
         } else {
-            list.insert(new CodeLine(line, instr), pos);       //meio (antes de p)
+            list.insert(new CodeLine(line, instr), pos);  //meio (antes de p)
         }
         return true;
     }
 
-    //remove linha exata, retorna elemento removido ou null
+    //remove linha exata; retorna elemento removido ou null
     public CodeLine remove(int line){
         Node<CodeLine> p = list.getHead();
         while (p != null){
@@ -62,14 +65,14 @@ public class CodeListAdapter {
         return null;
     }
 
-    //remove intervalo [li, lf], devolve lista com removidos ou null
+    //remove intervalo [li, lf]; devolve lista com removidos ou null
     public CodeListAdapter removeRange(int li, int lf){
         if (li > lf) return null;
         CodeListAdapter removed = new CodeListAdapter();
         Node<CodeLine> p = list.getHead();
         while (p != null){
             CodeLine cur = p.getDado();
-            p = p.getProx(); // avanca antes de remover
+            p = p.getProx(); //avanca antes de remover
             if (cur.line >= li && cur.line <= lf){
                 list.remove(cur);
                 removed.insertOrUpdate(cur.line, cur.instr);
@@ -78,7 +81,7 @@ public class CodeListAdapter {
         return removed.isEmpty() ? null : removed;
     }
 
-    //busca no por numero de linha
+    //busca no por numero de linha (para jnz)
     public Node<CodeLine> findNodeByLine(int line){
         Node<CodeLine> p = list.getHead();
         while (p != null){
@@ -101,10 +104,14 @@ public class CodeListAdapter {
 
     //carrega arquivo .ed1 no formato "LINHA espaco INSTRUCAO..."
     public void loadFromFile(File file) throws IOException {
-        while (!list.isEmpty()) list.pollFirst(); // limpa
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
-            String s;
-            while ((s = br.readLine()) != null) {
+        //limpa a lista
+        while (!list.isEmpty()) list.pollFirst();
+
+        Scanner sc = new Scanner(file);
+        try {
+            while (sc.hasNextLine()) {
+                String s = sc.nextLine();
+                if (s == null) break;
                 s = s.trim();
                 if (s.isEmpty()) continue;
                 int sp = s.indexOf(' ');
@@ -115,18 +122,22 @@ public class CodeListAdapter {
                 String instr = s.substring(sp+1).trim();
                 insertOrUpdate(ln, instr);
             }
+        } finally {
+            sc.close();
         }
     }
 
     //salva no formato "LINHA espaco INSTRUCAO"
     public void saveToFile(File file) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+        PrintWriter pw = new PrintWriter(file);
+        try {
             Node<CodeLine> p = list.getHead();
             while (p != null) {
-                bw.write(p.getDado().line + " " + p.getDado().instr);
-                bw.newLine();
+                pw.println(p.getDado().line + " " + p.getDado().instr);
                 p = p.getProx();
             }
+        } finally {
+            pw.close();
         }
     }
 }
