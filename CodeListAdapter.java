@@ -102,7 +102,7 @@ public class CodeListAdapter {
         }
     }
 
-    //carrega arquivo .ed1 no formato "LINHA espaco INSTRUCAO..."
+    //pra carrega arquivo no formato
     public void loadFromFile(File file) throws IOException {
         //limpa a lista
         while (!list.isEmpty()) list.pollFirst();
