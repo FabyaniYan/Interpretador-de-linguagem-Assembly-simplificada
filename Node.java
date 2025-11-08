@@ -20,7 +20,7 @@ public class Node <T>{
 		this(null, null);
 	}
 	
-	// Construtor com Parâmtetros
+	// Construtor com Parâmetros
 	// Elemento da Lista, Ponteiro do Próximo Elemento
 	public Node(T dado, Node<T>prox) {
 		this.dado = dado;
@@ -48,3 +48,4 @@ public class Node <T>{
 	}
 	
 }
+
