@@ -16,38 +16,53 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+    //lista encadeada que armazena as linhas de codigo
 public class CodeListAdapter {
     private final LinkedList<CodeLine> list = new LinkedList<>();
 
-    //lista vazia?
     public boolean isEmpty(){ return list.isEmpty(); }
 
     //no cabeca (menor linha)
     public Node<CodeLine> getHead(){ return list.getHead(); }
 
     //insere mantendo ordenacao por numero de linha; atualiza se ja existir
-    public boolean insertOrUpdate(int line, String instr){
+   public boolean insertOrUpdate(int line, String instr){
         if (line < 0) throw new IllegalArgumentException("linha negativa");
+
+        //primeiro elemento
         if (list.isEmpty()){
             list.insertHead(new CodeLine(line, instr));
             return true;
         }
+
+        //procura posicao de insercao
         Node<CodeLine> p = list.getHead(), ant = null;
         int pos = 1;
         while (p != null && p.getDado().line < line){
-            ant = p; p = p.getProx(); pos++;
+            ant = p; 
+            p = p.getProx(); 
+            pos++;
         }
+
+        //se ja existe, atualiza instrucao
         if (p != null && p.getDado().line == line){
-            p.getDado().instr = instr; //atualiza
+            p.getDado().instr = instr;
             return false;
         }
+
+        //insercao no inicio
         if (ant == null){
-            list.insertHead(new CodeLine(line, instr));   //cabeca
-        } else if (p == null){
-            list.insertTail(new CodeLine(line, instr));   //fim
-        } else {
-            list.insert(new CodeLine(line, instr), pos);  //meio (antes de p)
+            list.insertHead(new CodeLine(line, instr));
         }
+        //insercao no final
+        else if (p == null){
+            list.insertTail(new CodeLine(line, instr));
+        }
+        //insercao no meio
+        else {
+            list.insert(new CodeLine(line, instr), pos);
+        }
+
         return true;
     }
 
