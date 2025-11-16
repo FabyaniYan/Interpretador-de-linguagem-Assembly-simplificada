@@ -10,6 +10,8 @@
  * 	------------------------------------------------
  */
 
+//referencia: https://www.ic.unicamp.br/~ducatte/mc404/2010/docs/beginner_pt.pdf
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
